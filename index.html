@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Merkat GTM — cohort &amp; partnership pipeline</title>
+<style>
+  :root{
+    --paper:#F7F5EF; --card:#FFFFFF; --ink:#1B1F1D; --ink-2:#4A5450; --ink-3:#7C8781;
+    --rule:#E2DED2; --rule-2:#EFEBE1; --lane:#F1EEE5;
+    --brass:#9C7126; --brass-soft:#F0E6D2;
+    --live:#3B6B4A; --live-bg:#E4EEE5;
+    --warm:#9C7126; --warm-bg:#F5EBD8;
+    --cold:#6E7A75; --cold-bg:#EAEEEC;
+    --alert:#9E3F35; --alert-bg:#F8ECEA;
+    --shadow:0 1px 2px rgba(27,31,29,.05), 0 10px 30px -14px rgba(27,31,29,.22);
+    --serif:ui-serif,Georgia,'Iowan Old Style','Times New Roman',serif;
+    --sans:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#141817; --card:#1D2221; --ink:#EDEAE1; --ink-2:#A9B3AE; --ink-3:#79837E;
+      --rule:#2C3331; --rule-2:#242A28; --lane:#191E1D;
+      --brass:#D9A94F; --brass-soft:#33291A;
+      --live:#7FBE90; --live-bg:#1D2B22;
+      --warm:#D9A94F; --warm-bg:#2E2618;
+      --cold:#8C9791; --cold-bg:#232927;
+      --alert:#E08379; --alert-bg:#2E1E1C;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#141817; --card:#1D2221; --ink:#EDEAE1; --ink-2:#A9B3AE; --ink-3:#79837E;
+    --rule:#2C3331; --rule-2:#242A28; --lane:#191E1D;
+    --brass:#D9A94F; --brass-soft:#33291A;
+    --live:#7FBE90; --live-bg:#1D2B22; --warm:#D9A94F; --warm-bg:#2E2618;
+    --cold:#8C9791; --cold-bg:#232927; --alert:#E08379; --alert-bg:#2E1E1C;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px -14px rgba(0,0,0,.7);
+  }
+  :root[data-theme="light"]{
+    --paper:#F7F5EF; --card:#FFFFFF; --ink:#1B1F1D; --ink-2:#4A5450; --ink-3:#7C8781;
+    --rule:#E2DED2; --rule-2:#EFEBE1; --lane:#F1EEE5;
+    --brass:#9C7126; --brass-soft:#F0E6D2;
+    --live:#3B6B4A; --live-bg:#E4EEE5; --warm:#9C7126; --warm-bg:#F5EBD8;
+    --cold:#6E7A75; --cold-bg:#EAEEEC; --alert:#9E3F35; --alert-bg:#F8ECEA;
+    --shadow:0 1px 2px rgba(27,31,29,.05), 0 10px 30px -14px rgba(27,31,29,.22);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;
+       line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .shell{max-width:1400px;margin:0 auto;padding:22px 18px 40px}
+
+  .mast{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:flex-end;
+        padding-bottom:14px;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);
+           font-weight:700}
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(23px,3vw,31px);margin:5px 0 0;
+     letter-spacing:-.01em}
+  .sub{font-size:12.5px;color:var(--ink-3);margin-top:5px;max-width:60ch;line-height:1.5}
+  .reset{font:inherit;font-size:12px;color:var(--ink-3);background:none;border:1px solid var(--rule);
+         border-radius:5px;padding:6px 11px;cursor:pointer}
+  .reset:hover{border-color:var(--brass);color:var(--ink)}
+
+  .alerts{display:flex;flex-direction:column;gap:8px;margin:16px 0 0}
+  .alert{display:flex;gap:11px;background:var(--alert-bg);border-left:3px solid var(--alert);
+         border-radius:0 4px 4px 0;padding:11px 14px}
+  .alert .tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+              color:var(--alert);flex:none;width:74px;padding-top:2px}
+  .alert p{margin:0;font-size:13px;line-height:1.5;color:var(--ink-2)}
+  .alert p b{color:var(--ink);font-weight:650}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:18px 0 12px}
+  button.f{font:inherit;font-size:12.5px;padding:6px 12px;border-radius:999px;cursor:pointer;
+           border:1px solid var(--rule);background:var(--card);color:var(--ink-2)}
+  button.f:hover{border-color:var(--brass);color:var(--ink)}
+  button.f[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  input.q{font:inherit;font-size:13px;padding:7px 12px;border-radius:6px;flex:1;min-width:150px;
+          border:1px solid var(--rule);background:var(--card);color:var(--ink)}
+  :focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+  /* ---- board ---- */
+  .board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(258px,1fr);gap:12px;
+         overflow-x:auto;padding:4px 2px 14px;scroll-snap-type:x proximity}
+  @media (max-width:760px){.board{grid-auto-columns:minmax(80vw,80vw)}}
+  .lane{background:var(--lane);border:1px solid var(--rule);border-radius:7px;padding:10px;
+        display:flex;flex-direction:column;gap:8px;min-height:120px;scroll-snap-align:start}
+  .lane.over{border-color:var(--brass);background:var(--brass-soft)}
+  .lane h2{margin:0;font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+           color:var(--ink-3);font-weight:700;display:flex;justify-content:space-between;
+           align-items:center;gap:8px;padding:2px 2px 0}
+  .lane h2 .ct{font-family:var(--mono);font-size:11.5px;letter-spacing:0;
+               background:var(--card);border:1px solid var(--rule);border-radius:99px;
+               padding:1px 8px;color:var(--ink-2)}
+  .lane h2 .dot{width:7px;height:7px;border-radius:99px;flex:none;display:inline-block;
+                margin-right:6px;vertical-align:middle}
+
+  .cards{display:flex;flex-direction:column;gap:8px;min-height:40px}
+  .c{background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:11px 12px;
+     cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%;display:block;
+     box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .c:hover{border-color:var(--brass)}
+  .c.dragging{opacity:.45}
+  .c::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cold)}
+  .c.s-live::before{background:var(--live)}
+  .c.s-warm::before{background:var(--warm)}
+  .c .nm{font-weight:640;font-size:14px;line-height:1.3;display:flex;gap:6px;align-items:baseline}
+  .c .og{font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.35}
+  .c .tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+  .chip{font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;
+        padding:2px 7px;border-radius:3px;background:var(--cold-bg);color:var(--cold)}
+  .chip.warm{background:var(--warm-bg);color:var(--warm)}
+  .chip.live{background:var(--live-bg);color:var(--live)}
+  .star{color:var(--brass);font-size:11px}
+  .empty{font-size:12px;color:var(--ink-3);text-align:center;padding:14px 6px;
+         border:1px dashed var(--rule);border-radius:5px}
+
+  /* ---- sheet ---- */
+  .scrim{position:fixed;inset:0;background:rgba(20,24,23,.5);opacity:0;pointer-events:none;
+         transition:opacity .18s;z-index:40}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;top:0;right:0;height:100%;width:min(520px,94vw);background:var(--card);
+         border-left:1px solid var(--rule);z-index:50;transform:translateX(102%);
+         transition:transform .22s ease;overflow-y:auto;padding:22px 24px 60px}
+  .sheet.on{transform:none}
+  @media (prefers-reduced-motion:reduce){.sheet,.scrim{transition:none}}
+  .sheet .x{position:absolute;top:14px;right:16px;font:inherit;font-size:20px;line-height:1;
+            background:none;border:0;color:var(--ink-3);cursor:pointer;padding:6px}
+  .sheet .kicker{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--brass);
+                 font-weight:700}
+  .sheet h3{font-family:var(--serif);font-weight:400;font-size:24px;margin:6px 0 2px;
+            line-height:1.2;padding-right:30px}
+  .sheet .org{font-size:13px;color:var(--ink-3);margin-bottom:14px}
+  .mv{display:flex;flex-wrap:wrap;gap:6px;padding:12px 0;border-top:1px solid var(--rule-2);
+      border-bottom:1px solid var(--rule-2);margin-bottom:4px}
+  .mv span{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+           font-weight:700;width:100%;margin-bottom:2px}
+  .mv button{font:inherit;font-size:12px;padding:5px 10px;border-radius:5px;cursor:pointer;
+             border:1px solid var(--rule);background:var(--paper);color:var(--ink-2)}
+  .mv button:hover{border-color:var(--brass);color:var(--ink)}
+  .mv button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .dl{display:grid;grid-template-columns:100px minmax(0,1fr);gap:9px 13px;font-size:13.5px;
+      padding:14px 0;border-bottom:1px solid var(--rule-2)}
+  .dl dt{color:var(--ink-3);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+         font-weight:700;padding-top:2px}
+  .dl dd{margin:0;color:var(--ink-2);line-height:1.5;min-width:0}
+  .contact{font-family:var(--mono);font-size:12.5px;word-break:break-word;display:block;
+           color:var(--ink)}
+  .contact + .contact{margin-top:3px}
+  .msg{background:var(--rule-2);border-radius:5px;padding:13px 15px;font-size:12.5px;
+       line-height:1.6;color:var(--ink-2);white-space:pre-wrap;margin-top:2px}
+  .copy{font:inherit;font-size:11.5px;margin-top:8px;padding:5px 11px;border-radius:5px;
+        border:1px solid var(--rule);background:var(--paper);color:var(--ink-2);cursor:pointer}
+  .copy:hover{border-color:var(--brass);color:var(--ink)}
+  .flag{background:var(--alert-bg);border-left:3px solid var(--alert);border-radius:0 4px 4px 0;
+        padding:11px 13px;font-size:12.5px;color:var(--ink-2);margin-top:14px;line-height:1.5}
+  .flag b{color:var(--alert)}
+  .sessions{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+            border:1px solid var(--rule);border-radius:5px;overflow:hidden}
+  .sess{background:var(--card);padding:10px 12px;display:grid;grid-template-columns:74px 1fr;
+        gap:10px;align-items:baseline}
+  .sess .d{font-family:var(--mono);font-size:12px;color:var(--brass);font-weight:600}
+  .sess .t{font-size:12.5px;color:var(--ink-2);line-height:1.45}
+  .sess .t b{color:var(--ink);display:block;font-weight:640;margin-bottom:1px}
+  .foot{margin-top:26px;padding-top:13px;border-top:1px solid var(--rule);font-size:11.5px;
+        color:var(--ink-3);line-height:1.6}
+  .foot code{font-family:var(--mono);font-size:11px}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="mast">
+    <div>
+      <div class="eyebrow">Merkat · go-to-market</div>
+      <h1>Cohort &amp; partnership pipeline</h1>
+      <p class="sub">One confirmed cohort, twenty researched targets, nothing sent yet. Drag a card
+      between columns, or open it and use the stage buttons. Your board state is saved in this
+      browser.</p>
+    </div>
+    <button class="reset" id="reset">Reset board</button>
+  </header>
+
+  <div class="alerts">
+    <div class="alert"><span class="tag">Dates</span><div><p><b>Our cohort list still shows the old dates — Aug 20, Aug 27, Sep 3.</b> The 12 August call moved the series to <b>3, 10 and 17 September</b> after Chad's conflict on the 27th. Month inferred from that call, not confirmed in writing.</p></div></div>
+    <div class="alert"><span class="tag">Owed</span><div><p><b>Chad has waited since 12 August for five things:</b> session content, bio, headshot, website link, Merkat description. No demo-day announcement and no guest access until they land — and he is the proof line in all twenty other messages.</p></div></div>
+  </div>
+
+  <div class="toolbar">
+    <div id="filters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    <input class="q" id="q" type="search" placeholder="Search…" aria-label="Search targets">
+  </div>
+
+  <div class="board" id="board"></div>
+
+  <p class="foot">Built from <code>assets/cohorts/cohort-messages.txt</code> and
+  <code>cohort-outreach-list.md</code> (22 July) plus the 12 August AutomationTown call notes.
+  <b>Contacts have not been re-verified since July.</b> Nothing has been sent — outbound waits on
+  Reza's word. This page is a working board, not a record of what happened.</p>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Target detail"></aside>
+
+<script>
+const STAGES=[
+  {k:"todo",  l:"To contact",     c:"var(--cold)"},
+  {k:"sent",  l:"Sent",           c:"var(--warm)"},
+  {k:"talking",l:"In conversation",c:"var(--warm)"},
+  {k:"confirmed",l:"Confirmed",   c:"var(--live)"},
+  {k:"live",  l:"Delivered",      c:"var(--live)"},
+  {k:"passed",l:"Passed",         c:"var(--ink-3)"}
+];
+
+const DATA=[
+{id:"chad",stage:"confirmed",seg:"accounting",star:true,tone:"live",
+ name:"Chad Davis",org:"AutomationTown / LiveCA",vertical:"Accounting automation",
+ audience:"~800 firm owners — largest accountant-automation community in North America",
+ contacts:["chad@chaddavis.io","chad@liveca.ca"],channel:"Committed — direct",
+ why:"The anchor. A channel to hundreds of firms at once, where Kin or a tourism client is one logo each. And it is the vertical where we already own software nobody else in that room has — Returned does Canadian T1/T2.",
+ get:"Three 90-minute sessions in front of ~800 accounting firm owners under our own brand, content that stays in the community permanently, an intro at demo day, and the proof line that opens every other conversation on this board.",
+ sessions:[
+  {d:"Sep 3",t:"Hardware & local AI",b:"Mac Mini vs DGX Spark. Keeping agents isolated. Open-source models (Openclaw, Hermes) and open-source apps inside accounting workflows. 70–90 min."},
+  {d:"Sep 10",t:"Cloud environments",b:"Production cloud agents and VM-based agents. Firms keeping client data in their own private cloud. Cost and infrastructure; OpenRouter as the alternative to owning hardware."},
+  {d:"Sep 17",t:"Real implementation",b:"Case studies. RBAC and access control — how a firm makes sure staff hit the right version of the data. Ephemeral databases so people work against safe copies of production."}],
+ meta:"2pm ET · 90 min · presented by Jon + Reza",
+ flag:"Five deliverables outstanding since 12 August. Guest access and the demo-day announcement are both gated on them.",
+ note:"He steered the curriculum himself — killed the planned \"what is an agent\" opener because the room already knows, and asked for how-to instead."},
+
+{id:"bta",stage:"todo",seg:"trades",star:true,tone:"warm",
+ name:"Breakthrough Academy",org:"Contractor Evolution · Vancouver",vertical:"Trades coaching",
+ audience:"500+ member businesses across North America",
+ contacts:["info@btacademy.com","Danny Kerr — co-founder/host, LinkedIn","Benji Carlson — head of content, LinkedIn"],
+ channel:"Email + podcast guest slot",
+ why:"Our exact ICP and the same lane as Bidstra. Vancouver-based, so this is the rare one where a coffee is possible.",
+ get:"Two shots from one relationship — a Contractor Evolution slot for reach, and a members' cohort on the AutomationTown model. Trades is also where the Sales merkat proves itself.",
+ msg:"Hi Danny — I run Merkat, based in Vancouver like you. Contractors are starting to run \"an employee they text\" — it books jobs, chases quotes, and handles the admin that eats their week, 24/7. We're doing this live right now with Chad Davis's AutomationTown, the biggest accounting-automation community in North America. Two ideas: (1) I'd love to come on Contractor Evolution and show your audience exactly how it works — real demo, no fluff; (2) run a hands-on cohort for BTA members like we do with AutomationTown, where they leave with an agent working in their business. We're both in Vancouver — coffee this week?"},
+
+{id:"maker",stage:"todo",seg:"builders",star:true,tone:"warm",
+ name:"Maker School",org:"Nick Saraev",vertical:"Automation builders",
+ audience:"Builders already selling Make/n8n automations",
+ contacts:["nick@leftclick.ai","Cody McLean — cal.com/codymclean/30min","linkedin.com/in/nick-saraev"],
+ channel:"Email",
+ why:"Top pick of the builder communities. His members already sell automations for money, so the category needs no explaining — only that ours is a better thing to sell.",
+ get:"Resellers rather than users. A member shipping a Merkat agent bills recurring instead of a one-off build, which makes them distribution.",
+ msg:"Hi Nick — I run Merkat. Your members already sell automations; Merkat lets them ship a full \"agent employee\" (bookings, follow-up, admin, integrations) they can resell recurring, instead of a one-off Make/n8n build. We're running a cohort with Chad Davis's AutomationTown right now and would love to do one for Maker School — your members walk away reselling an agent, not just a workflow. 20 min this week?"},
+
+{id:"ncmba",stage:"todo",seg:"builders",star:true,tone:"warm",
+ name:"No Code MBA",org:"Seth Kramer",vertical:"No-code builders",audience:"No-code product builders",
+ contacts:["seth@nocode.mba","nocode.mba/sponsor","nocode.mba/affiliates"],channel:"Email",
+ why:"Cleanest contact on the list, and they already run sponsor and affiliate tracks — the commercial path exists rather than needing inventing.",
+ get:"A cohort plus an affiliate tie-in. The only target where recurring referral revenue is already something they sell.",
+ msg:"Hi Seth — I run Merkat. Your members build no-code products; Merkat is the \"agent employee\" layer they'd both use and offer to clients. We run cohorts with communities like Chad Davis's AutomationTown — I'd love to do one for No Code MBA, plus an affiliate tie-in. Open to a quick call?"},
+
+{id:"automators",stage:"todo",seg:"reseller",star:true,tone:"warm",
+ name:"The Automators",org:"theautomators.ai · Vancouver",vertical:"Automation agency — trades",
+ audience:"Agency serving home-services and trades",
+ contacts:["support@theautomators.com","+1 866-335-9561","theautomators.ai/book"],
+ channel:"Email / book a call",
+ why:"Reframed from competitor to reseller, and it is the right read — they hand-build what we productise, and they are in Vancouver.",
+ get:"They stop hand-coding each client and ship a Merkat agent instead. Recurring for them, volume for us. The dealer play with someone who already has the clients.",
+ msg:"Hi — I run Merkat, here in Vancouver too. You already build automations for home-services and trades clients. Instead of hand-coding each one, you could build on Merkat and ship those clients a full \"agent employee\" (bookings, follow-up, admin, integrations) — recurring revenue for you, not a one-off build. We power communities like Chad Davis's AutomationTown. Worth a quick call to see if Merkat becomes your build layer? We're both in Vancouver — happy to meet."},
+
+{id:"fight",stage:"todo",seg:"trades",name:"The Contractor Fight",org:"Tom Reber",
+ vertical:"Contractor coaching",audience:"The biggest audience on this board",
+ contacts:["linkedin.com/in/tomreber","thecontractorfight.com — contact"],channel:"LinkedIn DM + podcast",
+ why:"Sheer reach. If one trades community works, this is the one that makes trades worth productising.",
+ get:"A podcast demo plus a cohort inside BATTLEGROUND — his paying community rather than the free tier.",
+ msg:"Hey Tom — huge respect for what you've built with the Fight. I run Merkat: contractors are running \"an employee they text\" for lead intake, follow-ups and admin, 24/7. We're doing it live right now with Chad Davis's AutomationTown (biggest accounting-automation community in North America). I'd love to bring it to your world — a podcast demo and/or a cohort inside BATTLEGROUND where your guys leave with an agent working in their business. Worth a chat?"},
+
+{id:"cgn",stage:"todo",seg:"trades",name:"Contractor Growth Network",org:"Logan Shinholser",
+ vertical:"Contractor marketing",audience:"Community plus the New Era summit",
+ contacts:["linkedin.com/in/logan-shinholser-71884697","contractorgrowthnetwork.com — form"],
+ channel:"LinkedIn DM",
+ why:"They already run a summit, so the stage exists and we do not have to create the occasion.",
+ get:"A member session and a summit slot.",
+ msg:"Hey Logan — love the CGN content and the summit. I run Merkat — an \"AI employee\" contractors text for lead intake, follow-up and admin. We're running a cohort with Chad Davis's AutomationTown right now, and I think the contractor version is perfect for your community and the New Era summit. Could we run a session for your members? Quick call?"},
+
+{id:"certainpath",stage:"todo",seg:"trades",name:"CertainPath",org:"Institutional membership body",
+ vertical:"HVAC, plumbing, electrical, roofing",audience:"Institutional membership",
+ contacts:["mycertainpath.com — Become a Member / partner form","LinkedIn — partnerships lead"],
+ channel:"Partner form",
+ why:"They already run a vendor partner programme, so \"member benefit\" is an existing slot rather than a favour.",
+ get:"Member-benefit distribution — highest leverage on the board if it lands, and the slowest to close.",
+ msg:"Hi — I run Merkat. We give HVAC, plumbing, electrical and roofing contractors an \"employee they text\" for intake, follow-up, dispatch admin and bookkeeping. You already partner with tech vendors for your members (e.g. SmartAC) — we'd love to run a member cohort like the one we're running with Chad Davis's AutomationTown community. Who handles your partner programs? Happy to demo."},
+
+{id:"egia",stage:"todo",seg:"trades",name:"EGIA / Contractor University",org:"Nonprofit",
+ vertical:"HVAC & home performance",audience:"Contractor University members",
+ contacts:["egia.org — contact","mycontractoruniversity.com — contact"],channel:"Form, member-benefit framing",
+ why:"Nonprofit and education-shaped, so a teaching cohort is native to what they do rather than a sales intrusion.",
+ get:"A member session and curriculum presence that persists.",
+ msg:"Hi — I run Merkat. HVAC and home-performance contractors are using an \"AI employee they text\" for intake, scheduling admin and follow-up. As a member benefit for Contractor University, we'd love to run a hands-on cohort — the same model we're running with Chad Davis's AutomationTown community. Could we present at a member session?"},
+
+{id:"mello",stage:"todo",seg:"trades",name:"Tommy Mello",org:"Home Service Expert",
+ vertical:"Home service",audience:"Podcast audience + Freedom Event",
+ contacts:["Tommy Mello — LinkedIn","homeserviceexpert.com"],channel:"LinkedIn DM / podcast",
+ why:"A personality-led audience where one appearance does the work of a campaign.",
+ get:"Podcast demo, plus a member cohort tied to the Freedom Event.",
+ msg:"Hey Tommy — I run Merkat. Home-service owners are running \"an employee they text\" for CSR/intake, follow-up and back-office admin. We're doing this live with Chad Davis's AutomationTown (biggest accounting-automation community in North America). I'd love to come on Home Service Expert and demo it for your audience — and tie a member cohort to the Freedom Event. Game?"},
+
+{id:"jobber",stage:"todo",seg:"trades",name:"Jobber",org:"Canadian · Jobber Summit",
+ vertical:"Field service software",audience:"Very large home-service customer base",
+ contacts:["getjobber.com — partnerships","community.getjobber.com"],channel:"Partner form / LinkedIn",
+ why:"Canadian like us, and complementary rather than competing — we sit on top of their scheduling. That distinction has to lead or the conversation ends in one line.",
+ get:"Community access at real scale, or a Jobber Summit slot.",
+ msg:"Hi Jobber team — I run Merkat (Canadian too). We give home-service owners an \"employee they text\" that sits on top of their scheduling — handling intake, follow-up and admin. Complementary to Jobber, not competing. We run member cohorts (currently with Chad Davis's AutomationTown) and would love to do one for the Jobber community or a session at Jobber Summit. Who owns partnerships?"},
+
+{id:"hcp",stage:"todo",seg:"trades",name:"Housecall Pro",org:"PROs / SuperPro community",
+ vertical:"Field service software",audience:"PROs and SuperPro community",
+ contacts:["housecallpro.com/community","LinkedIn — community / partnerships"],channel:"Form / LinkedIn",
+ why:"Same complementary logic as Jobber, with a community team that is easier to reach than a partnerships org.",
+ get:"A community cohort.",
+ msg:"Hi — I run Merkat. Home-service pros are using an \"AI employee they text\" for intake, follow-up and admin — complementary to your platform. We'd love to run a cohort for the Housecall PROs / SuperPro community, like the one we run with Chad Davis's AutomationTown. Who handles community partnerships?"},
+
+{id:"roofing",stage:"todo",seg:"trades",name:"Roofing Insights",org:"Dmitry Lipinskiy",
+ vertical:"Roofing",audience:"YouTube channel + Roofing School students",
+ contacts:["roofinginsights.com","Dmitry — LinkedIn / YouTube"],channel:"Site / LinkedIn",
+ why:"One vertical, deep — and a school, so a curriculum module rather than a one-off talk.",
+ get:"A channel feature plus a Roofing School module where students leave with an agent running.",
+ msg:"Hey Dmitry — I run Merkat. Roofers are starting to run \"an employee they text\" for lead intake, follow-up and office admin. We're doing this live with Chad Davis's AutomationTown community. Would love a feature on your channel plus a module for Roofing School where your students leave with an agent running in their business. Worth a chat?"},
+
+{id:"aias",stage:"todo",seg:"builders",name:"AI Automation Society",org:"Solomon Christ",
+ vertical:"n8n / agent builders",audience:"Agent orchestration community",
+ contacts:["solomon@solomonchrist.com","linkedin.com/in/solomonchristai"],channel:"Email",
+ why:"Members already orchestrate agents by hand, which is the exact pain the productised version removes.",
+ get:"Builders who deploy Merkat and bill clients for it.",
+ msg:"Hi Solomon — I run Merkat. Your members orchestrate agents in n8n; Merkat is the productized \"agent employee\" they can deploy and bill clients for. We're running a cohort with Chad Davis's AutomationTown and would love to do one for your community. Worth 20 minutes?"},
+
+{id:"ottley",stage:"todo",seg:"builders",name:"AI Automation Agency Hub",org:"Liam Ottley / Morningside AI",
+ vertical:"AI agency operators",audience:"Very large — Learn AI and the Accelerator",
+ contacts:["linkedin.com/in/liamottley","skool.com/learn-ai"],channel:"LinkedIn DM, likely via team",
+ why:"The largest builder community here. Expect to go through a team rather than him.",
+ get:"AAA operators reselling agents rather than one-off builds.",
+ msg:"Hey Liam — I run Merkat. Your AAA members sell automations; Merkat lets them ship a full \"agent employee\" they resell recurring, not one-off builds. We run cohorts with communities like Chad Davis's AutomationTown — would love to do one for Learn AI / the Accelerator. Who on your team runs partnerships?"},
+
+{id:"realize",stage:"todo",seg:"accounting",name:"Realize",org:"Jason Staats",
+ vertical:"Accounting",audience:"Accounting firm owners",
+ contacts:["linkedin.com/in/jstaats","jasononfirms.com — form"],channel:"LinkedIn DM",
+ why:"The direct analog of AutomationTown, same ICP. Run it only after Chad's series has actually happened — the evidence is worth more than the speed.",
+ get:"A second accounting community, which is what turns one cohort into a repeatable vertical.",
+ msg:"Hey Jason — I run Merkat. We're running a cohort with Chad Davis's AutomationTown right now — firms leave with an \"agent employee\" doing intake, bookkeeping and admin. Realize members are the same ICP; I'd love to run the same arc for your firms. Quick call?"},
+
+{id:"loft",stage:"todo",seg:"accounting",name:"The Loft",org:"Karbon · AI in Accounting Summits",
+ vertical:"Accounting",audience:"Institutional — summit audiences",
+ contacts:["karbonhq.com — partnerships","Loft Labs / AI in Accounting Summits"],channel:"Company BD / email",
+ why:"Institutional and summit-shaped. Slowest to close, largest room.",
+ get:"A summit presentation plus a member cohort.",
+ msg:"Hi Karbon/Loft team — I run Merkat. Accounting firms are deploying an \"agent employee\" for intake, admin and bookkeeping. We run cohorts with communities like Chad Davis's AutomationTown; we'd love to present at a Loft Labs / AI in Accounting Summit and run a member cohort. Who owns Loft partnerships?"},
+
+{id:"coldemail",stage:"todo",seg:"builders",name:"Leadbird & Daniel Fazio",org:"Cold-email / lead-gen operators",
+ vertical:"Lead generation",audience:"Operators selling leads",
+ contacts:["Nick Abraham — linkedin.com/in/nick-abraham","x.com/NickAbraham12","Daniel Fazio — skool.com/@daniel-fazio-6536"],
+ channel:"DM",
+ why:"They sell the lead; we make the lead convert. An add-on to an offer they already have, not a new thing to explain.",
+ get:"A recurring add-on attached to somebody else's existing sale.",
+ msg:"Hey Nick — I run Merkat. Your members sell leads; Merkat's agent handles the follow-up and booking so those leads actually convert — a recurring add-on to their offer. We run cohorts with communities like Chad Davis's AutomationTown; would love to do one for your operators. Worth a chat?"},
+
+{id:"sweaty",stage:"todo",seg:"builders",name:"The Sweaty Startup",org:"Nick Huber",
+ vertical:"SMB operators",audience:"SMB owners — users, not builders",
+ contacts:["x.com/sweatystartup — DM","skool.com/sweatystartup"],channel:"X DM",
+ why:"The only community here whose members are the end customer rather than a channel to them.",
+ get:"Direct users. Flagged on the original list: his whole thesis is overseas staffing, so we overlap with what he sells. Lead with pairing, not replacing.",
+ msg:"Hey Nick — I run Merkat. Your SMB operators could run \"an employee they text\" for the repeatable admin, bookkeeping and intake — pairs with the overseas ops hires. We run cohorts with communities like Chad Davis's AutomationTown; would love to do a use-focused one for your members. Open to it?"},
+
+{id:"netwit",stage:"todo",seg:"reseller",name:"Netwit",org:"netwit.ca · Vancouver",
+ vertical:"Agentic AI agency",audience:"Client base across verticals",
+ contacts:["netwit.ca — contact form","LinkedIn"],channel:"Form / LinkedIn",
+ why:"Vancouver, and building what we productise. Enterprise-leaning, so a less certain fit than The Automators.",
+ get:"A build-and-resell layer relationship.",
+ msg:"Hi — I run Merkat (Vancouver). You're building agentic AI for clients across verticals — Merkat could be your build/deploy layer so you ship clients a full \"agent employee,\" faster, and bill it recurring. We power communities like Chad Davis's AutomationTown. Open to a call on building on Merkat / reselling it?"},
+
+{id:"springs",stage:"todo",seg:"reseller",name:"Springs",org:"Custom AI-agent dev shop",
+ vertical:"Custom agent development",audience:"Their client base",
+ contacts:["site contact form","LinkedIn"],channel:"Form / LinkedIn",
+ why:"Same reseller logic, least researched of the three — the original list had it as a candidate still needing identity confirmation.",
+ get:"Platform-underneath relationship instead of bespoke builds.",
+ msg:"Hi — I run Merkat. You build custom AI agents for clients — Merkat could be the platform underneath so you ship faster and resell an \"agent employee\" your clients pay for monthly, instead of bespoke builds every time. We power communities like Chad Davis's AutomationTown. Worth exploring a build-on/reseller fit?"}
+];
+
+const SEGS=[{k:"all",l:"All"},{k:"star",l:"★ Start here"},{k:"trades",l:"Trades"},
+            {k:"builders",l:"Builders"},{k:"accounting",l:"Accounting"},{k:"reseller",l:"Resellers"}];
+const KEY="merkat-gtm-stages-v1";
+let filter="all",query="",open=null;
+let stages=JSON.parse(localStorage.getItem(KEY)||"{}");
+DATA.forEach(d=>{if(!stages[d.id])stages[d.id]=d.stage;});
+const save=()=>localStorage.setItem(KEY,JSON.stringify(stages));
+const byId=id=>DATA.find(d=>d.id===id);
+
+const fw=document.getElementById("filters");
+SEGS.forEach(s=>{const b=document.createElement("button");b.className="f";b.textContent=s.l;
+  b.setAttribute("aria-pressed",s.k===filter);
+  b.onclick=()=>{filter=s.k;[...fw.children].forEach(c=>c.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");render();};fw.appendChild(b);});
+document.getElementById("q").addEventListener("input",e=>{query=e.target.value.toLowerCase();render();});
+document.getElementById("reset").onclick=()=>{
+  if(!confirm("Put every card back to its starting column?"))return;
+  stages={};DATA.forEach(d=>stages[d.id]=d.stage);save();render();};
+
+function match(d){
+  if(filter==="star"&&!d.star)return false;
+  if(filter!=="all"&&filter!=="star"&&d.seg!==filter)return false;
+  if(!query)return true;
+  return (d.name+d.org+d.vertical+d.audience+d.contacts.join(" ")).toLowerCase().includes(query);
+}
+function tone(d){return d.tone==="live"?"s-live":(d.star?"s-warm":"");}
+
+function render(){
+  const board=document.getElementById("board");board.innerHTML="";
+  STAGES.forEach(st=>{
+    const items=DATA.filter(d=>stages[d.id]===st.k&&match(d));
+    const lane=document.createElement("section");lane.className="lane";lane.dataset.stage=st.k;
+    lane.innerHTML='<h2><span><span class="dot" style="background:'+st.c+'"></span>'+st.l+
+                   '</span><span class="ct">'+items.length+'</span></h2>';
+    const wrap=document.createElement("div");wrap.className="cards";
+    if(!items.length)wrap.innerHTML='<div class="empty">Nothing here</div>';
+    items.forEach(d=>{
+      const c=document.createElement("button");c.className="c "+tone(d);c.draggable=true;c.dataset.id=d.id;
+      c.innerHTML='<span class="nm">'+(d.star?'<span class="star">★</span>':'')+d.name+'</span>'+
+        '<span class="og">'+d.org+'</span><span class="tags">'+
+        '<span class="chip'+(d.tone==="live"?" live":(d.star?" warm":""))+'">'+d.vertical+'</span></span>';
+      c.onclick=()=>openSheet(d.id);
+      c.addEventListener("dragstart",e=>{e.dataTransfer.setData("text/plain",d.id);c.classList.add("dragging");});
+      c.addEventListener("dragend",()=>c.classList.remove("dragging"));
+      wrap.appendChild(c);
+    });
+    lane.appendChild(wrap);
+    lane.addEventListener("dragover",e=>{e.preventDefault();lane.classList.add("over");});
+    lane.addEventListener("dragleave",()=>lane.classList.remove("over"));
+    lane.addEventListener("drop",e=>{e.preventDefault();lane.classList.remove("over");
+      const id=e.dataTransfer.getData("text/plain");if(id){stages[id]=st.k;save();render();}});
+    board.appendChild(lane);
+  });
+}
+
+const sheet=document.getElementById("sheet"),scrim=document.getElementById("scrim");
+function closeSheet(){open=null;sheet.classList.remove("on");scrim.classList.remove("on");}
+scrim.onclick=closeSheet;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet();});
+
+function openSheet(id){
+  open=id;const d=byId(id);
+  let h='<button class="x" aria-label="Close">&times;</button>'+
+    '<div class="kicker">'+(stages[id]==="confirmed"||stages[id]==="live"?"Confirmed":"Target")+'</div>'+
+    '<h3>'+d.name+'</h3><div class="org">'+d.org+'</div><div class="mv"><span>Stage</span>';
+  STAGES.forEach(s=>{h+='<button data-st="'+s.k+'" aria-pressed="'+(stages[id]===s.k)+'">'+s.l+'</button>';});
+  h+='</div>';
+  if(d.sessions){h+='<div class="dl"><dt>Sessions</dt><dd><div class="sessions">';
+    d.sessions.forEach(s=>{h+='<div class="sess"><span class="d">'+s.d+'</span><span class="t"><b>'+s.t+'</b>'+s.b+'</span></div>';});
+    h+='</div><div style="margin-top:7px;font-size:12px;color:var(--ink-3)">'+d.meta+'</div></dd></div>';}
+  h+='<div class="dl"><dt>Vertical</dt><dd>'+d.vertical+'</dd><dt>Audience</dt><dd>'+d.audience+'</dd>'+
+     '<dt>Reach them</dt><dd>'+d.contacts.map(c=>'<span class="contact">'+c+'</span>').join('')+
+     '<div style="margin-top:6px;font-size:12px;color:var(--ink-3)">'+d.channel+'</div></dd></div>'+
+     '<div class="dl"><dt>Why them</dt><dd>'+d.why+'</dd><dt>What we get</dt><dd>'+d.get+'</dd></div>';
+  if(d.note)h+='<div class="dl"><dt>Note</dt><dd>'+d.note+'</dd></div>';
+  if(d.msg)h+='<div class="dl"><dt>Ready to send</dt><dd><div class="msg">'+d.msg+'</div>'+
+              '<button class="copy" id="copyMsg">Copy message</button></dd></div>';
+  if(d.flag)h+='<div class="flag"><b>Blocking.</b> '+d.flag+'</div>';
+  sheet.innerHTML=h;
+  sheet.querySelector(".x").onclick=closeSheet;
+  sheet.querySelectorAll(".mv button").forEach(b=>{b.onclick=()=>{stages[id]=b.dataset.st;save();render();openSheet(id);};});
+  const cp=document.getElementById("copyMsg");
+  if(cp)cp.onclick=()=>{navigator.clipboard.writeText(d.msg).then(()=>{cp.textContent="Copied";
+    setTimeout(()=>cp.textContent="Copy message",1600);},()=>{cp.textContent="Select it manually";});};
+  sheet.classList.add("on");scrim.classList.add("on");
+}
+render();
+</script>
+</body>
+</html>
